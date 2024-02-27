@@ -1,0 +1,39 @@
+version: '3'
+services:
+  mediawiki:
+    image: mediawiki
+    restart: always
+    ports:
+      - 9998:80
+    links:
+      - db
+    volumes:
+      - ./app/images:/var/www/html/images
+      - ./app/LocalSettings.php:/var/www/html/LocalSettings.php
+
+  db:
+    image: mariadb:11
+    restart: always
+    environment:
+      MYSQL_DATABASE: wiki
+      MYSQL_USER: wiki
+      MYSQL_PASSWORD: 12345
+      MYSQL_ROOT_PASSWORD: 123456
+    volumes:
+      - ./app/db:/var/lib/mysql
+  
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    ports:
+      - 9999:80
+    environment:
+      - PMA_ARBITRARY=1
+
+#volumes: 
+#  images:
+#  db:
+
+networks:
+  wiki:
+    external: true
